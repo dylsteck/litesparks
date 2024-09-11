@@ -9,13 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.1.6",
+    "@tanstack/react-query": "^5.55.4",
     "@zoralabs/protocol-sdk": "^0.9.6",
     "next": "14.2.9",
     "permissionless": "^0.2.0",
     "react": "^18",
     "react-dom": "^18",
-    "viem": "^2.21.5",
-    "wagmi": "^2.12.10"
+    "viem": "^2.21.6",
+    "wagmi": "^2.12.11"
   },
   "devDependencies": {
     "@types/node": "^20",
