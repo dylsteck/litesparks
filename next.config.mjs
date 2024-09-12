@@ -1,9 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['i.imgur.com', 'ipfs.io', 'euc.li'],
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 's3.amazonaws.com',
+          pathname: '/my-bucket/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'i.imgur.com',
+          pathname: '/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'ipfs.io',
+          pathname: '/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'euc.li',
+          pathname: '/**',
+        },
+      ],
     },
-};
-
-
-export default nextConfig;
+  };
+  
+  export default nextConfig;  
