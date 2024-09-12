@@ -1,6 +1,7 @@
 import React from "react";
 import { headers } from 'next/headers';
 import PageLayout from "../components/page-layout";
+import Profile from "../components/profile";
 
 export default function AddressPage() {
   const headerList = headers();
@@ -10,7 +11,7 @@ export default function AddressPage() {
 
   return (
     <PageLayout>
-      <p className="p-3">Address: {address}</p>
+      <Profile address={address} />
     </PageLayout>
   );
 }

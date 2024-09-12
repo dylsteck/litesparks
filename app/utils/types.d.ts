@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type ZoraProfile = {
     address: string;
     wallets: string[];
@@ -333,3 +334,47 @@ export type ZoraMintComment = {
         transaction_hash: string;
     };
 };
+
+export interface ZoraProfileTokensResponse {
+    result: {
+        data: {
+            json: {
+                data: ZoraTokenData[];
+                limit: number;
+                hasMore: boolean;
+                cursor: {
+                    first: string;
+                    last: string;
+                };
+            };
+        };
+    };
+}
+
+export interface ZoraTokenData {
+    standard: string;  
+    mintableType: string;  
+    collection: {
+        chainName: string; 
+        name: string;  
+        address: string;  
+        image: string;  
+        resizedImage: string;  
+    };
+    token: {
+        tokenId: string; 
+        creator: string;  
+        name: string;  
+        totalMinted: number | null;  
+        isStarted: boolean;  
+        image: {
+            url: string | null;  
+            mimeType: string;  
+            resizedImage: string | null; 
+        };
+        media: {
+            url: string | null;  
+            mimeType: string | null;  
+    };
+  }
+}

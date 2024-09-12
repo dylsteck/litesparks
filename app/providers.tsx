@@ -1,20 +1,11 @@
 "use client";
 import '@rainbow-me/rainbowkit/styles.css';
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import {
-  mainnet,
-  optimism,
-  base,
-} from 'wagmi/chains';
-import {
-  QueryClientProvider,
-  QueryClient,
-} from "@tanstack/react-query";
 import React from 'react';
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import { mainnet, optimism, base } from 'wagmi/chains';
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { UserProvider } from './components/context/user-context';
 
 const config = getDefaultConfig({
     appName: 'Litesparks',
@@ -30,7 +21,9 @@ export default function Providers({ children }: { children: React.ReactNode}){
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
             <RainbowKitProvider initialChain={base}>
-              {children}
+              <UserProvider>
+                {children}
+              </UserProvider>
             </RainbowKitProvider>
           </QueryClientProvider>
         </WagmiProvider>

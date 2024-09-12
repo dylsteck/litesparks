@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
 
     try {
         const zoraResponse = await fetch(`${ZORA_BACKEND_API}/discover/personalized_feed?cursor=${cursor}&limit=${limit}`);
-        console.log(zoraResponse)
         if (!zoraResponse.ok) {
             return NextResponse.json({ error: "Failed to fetch data from Zora API" }, { status: zoraResponse.status });
         }
