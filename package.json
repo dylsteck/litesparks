@@ -9,13 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
+    "@radix-ui/react-slot": "^1.1.0",
     "@rainbow-me/rainbowkit": "^2.1.6",
     "@tanstack/react-query": "^5.55.4",
     "@zoralabs/protocol-sdk": "^0.9.6",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.439.0",
     "next": "14.2.9",
     "permissionless": "^0.2.0",
     "react": "^18",
     "react-dom": "^18",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7",
     "viem": "^2.21.6",
     "wagmi": "^2.12.11"
   },

@@ -1,66 +1,95 @@
+/* eslint-disable @next/next/no-img-element */
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import { fetchZoraFeed } from "@/app/utils/api";
+import PageLayout from "./components/page-layout";
+import { ZoraFeedItem } from "@/app/utils/types";
+import { SKELETON_PFP_URL } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="flex flex-row gap-2 items-center">
-          <Image
-            className="dark:invert"
-            src="/sparks-transparent.png"
-            alt="Next.js logo"
-            width={50}
-            height={50}
-            priority
-          />
-          <p className="font-medium text-2xl">litesparks</p>
-        </div>
-        <div className="flex flex-col gap-1 items-start">
-          <p className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-            an open source minting app
-          </p>
-          <p className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-            built on the <a className="underline" href="https://zora.co" target="_blank">zora protocol</a>
-          </p>
-        </div>
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["zoraFeed", "3", 5],
+    queryFn: () => fetchZoraFeed("3", 5),
+  });
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <ConnectButton />
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://github.com/dylsteck/litesparks"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Repository
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://dylansteck.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Built by dylsteck.eth
-        </a>
-      </footer>
-    </div>
+  if (isLoading){
+    return (
+      <PageLayout>
+        <div className="p-3">Loading...</div>
+      </PageLayout>
+    );
+  }
+  if (error){
+    return (
+      <PageLayout>
+        <div className="p-3">Error loading data</div>
+      </PageLayout>
+    );
+  }
+
+  return (
+    <PageLayout>
+      <div className="space-y-6 max-w-3xl mx-auto">
+        {data?.data.map((item: ZoraFeedItem) => {
+          const ipfsLink = item.media.image_preview?.raw?.replace(
+            "ipfs://",
+            "https://ipfs.io/ipfs/"
+          );
+          const dimensions = item.media.image_dimensions
+            ? item.media.image_dimensions.split("x").map(Number)
+            : [300, 300];
+          const [width, height] = dimensions;
+
+          return (
+            <div key={item.uuid} className="pb-5 border-b border-gray-200 p-4">
+              <div className="flex items-center space-x-2">
+                <img
+                  loading="lazy"
+                  src={item.creator_profile.avatar ?? SKELETON_PFP_URL}
+                  alt={item.creator_profile.username}
+                  className="w-6 h-6 rounded-full"
+                />
+                <p>
+                  <a className="cursor-pointer" href={`/${item.creator_profile.address}`}>
+                    <span className="font-medium">
+                      {item.creator_profile.displayName || item.creator_profile.username}{" "}
+                    </span>
+                  </a>
+                  <span className="font-normal text-gray-500">posted</span>{" "}
+                  <span className="font-semibold">{item.feed_item.token_name}</span>
+                </p>
+              </div>
+              <div className="w-full flex justify-center mt-4">
+                <Image
+                  src={ipfsLink}
+                  alt={item.feed_item.token_name}
+                  width={width}
+                  height={height}
+                  className="rounded-md object-cover"
+                  style={{ maxWidth: "100%", height: "auto" }}
+                />
+              </div>
+              <div className="flex justify-between mt-4 items-center">
+                <div className="flex space-x-2 text-gray-500">
+                  <div className="flex items-center space-x-1">
+                    <span className="text-xl">+</span>
+                    <span className="text-white">{item.user_mint_count}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <span className="text-xl">💬</span>
+                    <span className="text-white">{item.mint_comments_preview_and_total.total}</span>
+                  </div>
+                </div>
+                <Button className="px-4 py-2 bg-white text-black mr-2 rounded-xl">
+                  Mint
+                </Button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </PageLayout>
   );
 }

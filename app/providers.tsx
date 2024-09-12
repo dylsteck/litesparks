@@ -30,7 +30,7 @@ export default function Providers({ children }: { children: React.ReactNode}){
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
             <RainbowKitProvider initialChain={base}>
-                {children}
+              {children}
             </RainbowKitProvider>
           </QueryClientProvider>
         </WagmiProvider>
