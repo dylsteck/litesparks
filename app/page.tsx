@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-"use client";
+"use client"; 
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { ChatAltIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import { fetchZoraFeed } from "@/app/utils/api";
 import PageLayout from "./components/page-layout";
 import { ZoraFeedItem, ZoraFeedResponse } from "@/app/utils/types";
@@ -78,7 +79,7 @@ export default function Home() {
               <div key={item.uuid} className="pb-5 border-b border-gray-200 p-4">
                 <div className="flex items-center space-x-2">
                   <img
-                    src={item.creator_profile.avatar ?? SKELETON_PFP_URL}
+                    src={item.creator_profile.avatar ? (item.creator_profile.avatar.startsWith("ipfs://") ? `https://ipfs.io/ipfs/${item.creator_profile.avatar.slice(7)}` : item.creator_profile.avatar) : SKELETON_PFP_URL}
                     alt={item.creator_profile.username}
                     width={24}
                     height={24}
@@ -110,21 +111,23 @@ export default function Home() {
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
-                <div className="flex justify-between mt-4 items-center">
+                <div className="flex justify-between mt-5 items-center">
                   <div className="flex space-x-2 text-gray-500">
                     <div className="flex items-center space-x-1">
-                      <span className="text-xl">+</span>
+                      <PlusCircleIcon className="text-white w-4 h-4" />
                       <span className="text-white">{item.user_mint_count}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <span className="text-xl">💬</span>
+                      <span className="text-xl">
+                        <ChatAltIcon className="text-white w-4 h-4" />
+                      </span>
                       <span className="text-white">
                         {item.mint_comments_preview_and_total.total}
                       </span>
                     </div>
                   </div>
                   <Button className="px-4 py-2 bg-white text-black mr-2 rounded-xl">
-                    Mint
+                    mint
                   </Button>
                 </div>
               </div>
