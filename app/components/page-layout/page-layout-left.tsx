@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { HomeIcon } from '@heroicons/react/outline';
 import { useAccount } from "wagmi";
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { SKELETON_PFP_URL } from "@/lib/utils";
+import { EMPTY_USER_PFP } from "@/lib/utils";
 import { useSetUser, useUser } from "../context/user-context";
 import { fetchZoraProfile } from "@/app/utils/api";
+import SparksIcon from "../sparks-icon";
 
 export default function PageLayoutLeft() {
   const { address, isConnected } = useAccount();
@@ -37,14 +38,30 @@ export default function PageLayoutLeft() {
   }, [fetchProfile]);
 
   return (
-    <nav className="col-span-1 md:col-span-3 border-r border-gray-400 overflow-y-auto relative md:flex justify-end items-start pr-0 pt-0 md:pr-2 md:pt-3">
-      <div className="hidden md:flex md:flex-col md:gap-5">
+    <nav className="border-t border-gray-400 fixed bottom-0 w-full md:relative md:border-t-0 md:border-r md:border-gray-400 md:w-auto md:flex justify-end items-start pr-0 pt-0 md:pr-2 md:pt-3">
+      <div className="flex justify-around bg-black p-3 md:hidden">
         <Link href="/">
           <HomeIcon className="w-6 h-6 text-white/90" />
         </Link>
         <button onClick={handleProfileClick}>
           <img
-            src={user?.avatar || SKELETON_PFP_URL}
+            src={user?.avatar || EMPTY_USER_PFP}
+            alt="User PFP"
+            className="w-6 h-6 object-contain rounded-full"
+          />
+        </button>
+      </div>
+      
+      <div className="hidden md:flex md:flex-col md:gap-5">
+        <div className="mb-2">
+          <SparksIcon />
+        </div>
+        <Link href="/">
+          <HomeIcon className="w-6 h-6 text-white/90" />
+        </Link>
+        <button onClick={handleProfileClick}>
+          <img
+            src={user?.avatar || EMPTY_USER_PFP}
             alt="User PFP"
             className="w-6 h-6 object-contain rounded-full"
           />

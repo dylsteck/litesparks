@@ -28,7 +28,7 @@ export default function Login() {
   }, [address, isConnected, setUser]);
 
   return (
-    <Button className="bg-white hover:bg-white text-black rounded-xl" onClick={() => handleSignIn()}>
+    <Button className="bg-white hover:bg-white text-black/85 rounded-2xl !font-medium" onClick={() => handleSignIn()}>
       sign in
     </Button>
   );

@@ -5,7 +5,7 @@ import { ChatAltIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import { fetchZoraFeed } from "@/app/utils/api";
 import PageLayout from "./components/page-layout";
 import { ZoraFeedItem, ZoraFeedResponse } from "@/app/utils/types";
-import { SKELETON_PFP_URL } from "@/lib/utils";
+import { EMPTY_USER_PFP } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useEffect, useCallback } from "react";
 
@@ -79,7 +79,7 @@ export default function Home() {
               <div key={item.uuid} className="pb-5 border-b border-gray-200 p-4">
                 <div className="flex items-center space-x-2">
                   <img
-                    src={item.creator_profile.avatar ? (item.creator_profile.avatar.startsWith("ipfs://") ? `https://ipfs.io/ipfs/${item.creator_profile.avatar.slice(7)}` : item.creator_profile.avatar) : SKELETON_PFP_URL}
+                    src={item.creator_profile.avatar ? (item.creator_profile.avatar.startsWith("ipfs://") ? `https://ipfs.io/ipfs/${item.creator_profile.avatar.slice(7)}` : item.creator_profile.avatar) : EMPTY_USER_PFP}
                     alt={item.creator_profile.username}
                     width={24}
                     height={24}
