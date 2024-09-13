@@ -7,9 +7,12 @@ import PageLayout from "./components/page-layout";
 import { ZoraFeedItem, ZoraFeedResponse } from "@/app/utils/types";
 import { EMPTY_USER_PFP } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useEffect, useCallback } from "react";
+import React from "react";
 
 export default function Home() {
+  const observerRef = React.useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = React.useRef<HTMLDivElement>(null);
+
   const {
     data,
     isLoading,
@@ -22,27 +25,31 @@ export default function Home() {
     queryFn: ({ pageParam = { first: "3", last: "" } }) =>
       fetchZoraFeed((pageParam as { first: string; last: string }).first, 5),
     getNextPageParam: (lastPage) => {
-      if (lastPage.cursor.last) {
-        return { first: lastPage.cursor.last, last: lastPage.cursor.first };
-      }
-      return undefined;
+      return lastPage?.cursor?.last ? { first: lastPage.cursor.last, last: lastPage.cursor.first } : undefined;
     },
     initialPageParam: { first: "3", last: "" },
   });
 
-  const handleScroll = useCallback(() => {
-    const scrollHeight = document.documentElement.scrollHeight;
-    const currentScroll = window.innerHeight + window.scrollY;
+  React.useEffect(() => {
+    if (loadMoreRef.current) {
+      observerRef.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        },
+        { threshold: 1.0 }
+      );
 
-    if (currentScroll + 100 >= scrollHeight && hasNextPage) {
-      fetchNextPage();
+      observerRef.current.observe(loadMoreRef.current);
     }
-  }, [hasNextPage, fetchNextPage]);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   if (isLoading) {
     return (
@@ -70,14 +77,10 @@ export default function Home() {
             const ipfsLink = item.media.image_preview?.raw?.startsWith("ipfs://")
               ? `https://ipfs.io/ipfs/${item.media.image_preview.raw.slice(7)}`
               : item.media.image_preview?.raw;
-            const dimensions = item.media.image_dimensions
-              ? item.media.image_dimensions.split("x").map(Number)
-              : [300, 300];
-            const [width, height] = dimensions;
 
             return (
-              <div key={item.uuid} className="pb-5 border-b border-gray-200 p-4">
-                <div className="flex items-center space-x-2">
+              <div key={item.uuid} className="pb-5 border-b border-gray-200">
+                <div className="flex items-center space-x-2 p-3 pb-0">
                   <img
                     src={item.creator_profile.avatar ? (item.creator_profile.avatar.startsWith("ipfs://") ? `https://ipfs.io/ipfs/${item.creator_profile.avatar.slice(7)}` : item.creator_profile.avatar) : EMPTY_USER_PFP}
                     alt={item.creator_profile.username}
@@ -105,13 +108,11 @@ export default function Home() {
                   <img
                     src={ipfsLink ?? ''}
                     alt={item.feed_item.token_name}
-                    width={width}
-                    height={height}
-                    className="rounded-md object-cover"
+                    className="w-full object-cover"
                     style={{ maxWidth: "100%", height: "auto" }}
                   />
                 </div>
-                <div className="flex justify-between mt-5 items-center">
+                <div className="flex justify-between mt-5 items-center p-3 pt-0">
                   <div className="flex space-x-2 text-gray-500">
                     <div className="flex items-center space-x-1">
                       <PlusCircleIcon className="text-white w-4 h-4" />
@@ -134,9 +135,11 @@ export default function Home() {
             );
           })
         )}
-        {isFetchingNextPage && (
-          <div className="p-3 text-center">
-            <div className="animate-spin w-10 h-10 border-4 border-t-4 border-gray-200 rounded-full" />
+        {(isFetchingNextPage || hasNextPage) && (
+          <div ref={loadMoreRef} className="p-3 text-center">
+            {isFetchingNextPage && (
+              <div className="animate-spin w-10 h-10 border-4 border-t-4 border-gray-200 rounded-full" />
+            )}
           </div>
         )}
       </div>

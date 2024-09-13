@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full w-full m-0 p-0">
       <Script
         strategy="lazyOnload"
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_PROJECT_ID}`}
@@ -38,13 +38,11 @@ export default function RootLayout({
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', '${process.env.NEXT_PUBLIC_GA_PROJECT_ID}', {
-          page_path: window.location.pathname,
+            page_path: window.location.pathname,
           });
         `}
       </Script>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black h-full w-full m-0 p-0`}>
         <Providers>
           <AppLayout>
             {children}
